@@ -8,14 +8,15 @@ var gulp = require('gulp'),
   browserSync = require('browser-sync').create(),
   mixins = require('postcss-mixins'),
   sVgSprite = require('gulp-svg-sprite')
-  rename = require('gulp-rename');
+  rename = require('gulp-rename')
+  hexrgba = require('postcss-hexrgba');
 
 var reload = browserSync.reload;
 
 // for postcss and browserstream
 gulp.task('styles', function() {
   return gulp.src('./assets/styles/*.css')
-    .pipe(postcss([cssImport, mixins, cssvars, nested, autoprefixer]))
+    .pipe(postcss([cssImport, mixins, cssvars, nested, hexrgba, autoprefixer]))
     .pipe(gulp.dest('./temp/styles'))
     .pipe(reload({stream:true}));
 });
