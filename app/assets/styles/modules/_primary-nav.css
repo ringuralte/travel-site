@@ -1,7 +1,13 @@
-.primary-nav {
+.primary-nav { 
+  &--is-expanded {
+    background-color: rgba($mainBlue,0.55);
+  } 
+
 
   &--pull-right {
-    float: right;
+    @mixin atMedium {
+      float: right;
+    }
   }
 
   ul {
@@ -13,8 +19,20 @@
 
   li {
     list-style: none;
-    float: left;
+    display: inline-block;
     padding-right: 20px;
+
+    @mixin atMedium {
+      float: left;
+      display: block;
+    }
+  }
+
+  li:last-child {
+    padding-right: 0;
+    @mixin atMedium {
+      padding-right: 20px;
+    }
   }
 
   a {
@@ -22,6 +40,14 @@
     text-decoration: none;
     font-weight: 300;
     display: block;
-    padding: 12px 0;
+    padding: 5px 8;
+    font-size: .8rem;
+    background-color: rgba($mainBlue, .5);
+
+    @mixin atMedium {
+      padding: 12px 0;
+      font-size: 1rem;
+      background-color: transparent;
+    }
   }
 }

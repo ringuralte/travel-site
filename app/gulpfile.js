@@ -7,9 +7,10 @@ var gulp = require('gulp'),
   cssImport = require('postcss-import'),
   browserSync = require('browser-sync').create(),
   mixins = require('postcss-mixins'),
-  sVgSprite = require('gulp-svg-sprite')
-  rename = require('gulp-rename')
-  hexrgba = require('postcss-hexrgba');
+  sVgSprite = require('gulp-svg-sprite'),
+  rename = require('gulp-rename'),
+  hexrgba = require('postcss-hexrgba'),
+  webpack = require('webpack');
 
 var reload = browserSync.reload;
 
@@ -31,10 +32,12 @@ gulp.task('watch', function(){
 
   gulp.watch('./assets/styles/**/*.css', gulp.series('styles'));
   gulp.watch('*.html').on('change', reload);
+  gulp.watch('./assets/scripts/**/*.js', gulp.series('scripts'));
+  gulp.watch('./assets/scripts/**/*.js').on('change', reload);
 });
 
 //sprite management
-
+//
 var config = {
   mode: {
     css: {
@@ -45,7 +48,7 @@ var config = {
       }
     }
   }
-}
+};
 gulp.task('sprites', function() {
   return gulp.src('./assets/images/icons/**/*.svg')
     .pipe(sVgSprite(config))
@@ -56,4 +59,15 @@ gulp.task('copySpritesCss', function() {
   return gulp.src('./temp/sprite/**/*.css')
     .pipe(rename('_sprite.css'))
     .pipe(gulp.dest('./assets/styles/modules'));
+});
+
+//javascript part
+gulp.task('scripts', function(callback) {
+  webpack(require('./webpack.config.js'), function(err, stats) {
+    if(err) {
+      console.log(err.toString());
+    }
+    console.log(stats.toString());
+    callback();
+  });
 });
