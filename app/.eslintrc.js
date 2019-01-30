@@ -3,16 +3,11 @@ module.exports = {
         "browser": true
     },
     "extends": ["eslint:recommended",
-      "prettier"
     ],
-  "plugins": [
-      "prettier"
-  ],
     "parserOptions": {
         "ecmaVersion": 5
     },
     "rules": {
-        "prettier/prettier": "error",
 
         "indent": [
             "error",
@@ -21,10 +16,6 @@ module.exports = {
         "linebreak-style": [
             "error",
             "unix"
-        ],
-        "quotes": [
-            "error",
-            "double"
         ],
         "semi": [
             "error",

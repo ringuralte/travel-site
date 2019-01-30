@@ -10,13 +10,13 @@ class Modal {
     // click the open modal button
 
     this.openModalButton[0].addEventListener('click', function(){
-      return openModal.bind(this); 
+      return this.openModal; 
     });
 
     // clicking the x close the modal button
     this.closeModalButton[0].addEventListener('click', function() {
       return this.closeModal;
-    })
+    });
 
   }
 
