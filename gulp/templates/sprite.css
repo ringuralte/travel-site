@@ -4,7 +4,7 @@
 
   {{#first}}
   .icon {
-    background-image: url('../assets/images/sprites/svg/{{{sprite}}}')
+    background-image: url('../assets/images/sprites/{{{sprite}}}')
   }
   {{/first}}
 
@@ -14,3 +14,4 @@
     background-position: {{position.relative.xy}};
   }
 {{/shapes}}
+
