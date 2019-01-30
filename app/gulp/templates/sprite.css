@@ -4,7 +4,7 @@
 
   {{#first}}
   .icon {
-    background-image: url('/temp/sprite/css/{{{sprite}}}');
+    background-image: url('../../assets/images/sprites/svg/{{{sprite}}}')
   }
   {{/first}}
 

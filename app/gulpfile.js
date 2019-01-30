@@ -10,7 +10,13 @@ var gulp = require('gulp'),
   sVgSprite = require('gulp-svg-sprite'),
   rename = require('gulp-rename'),
   hexrgba = require('postcss-hexrgba'),
-  webpack = require('webpack');
+  webpack = require('webpack'),
+  imagemin = require('gulp-imagemin'),
+  del = require('del'),
+  usemin = require('gulp-usemin'),
+  rev = require('gulp-rev'),
+  cssnano = require('gulp-cssnano'),
+  uglify = require('gulp-uglify');
 
 var reload = browserSync.reload;
 
@@ -49,10 +55,13 @@ var config = {
     }
   }
 };
+
+gulp.task('beginClean', () => del(['./temp/sprite', './assets/images/sprites']));
+
 gulp.task('sprites', function() {
   return gulp.src('./assets/images/icons/**/*.svg')
     .pipe(sVgSprite(config))
-    .pipe(gulp.dest('./temp/sprite'));
+    .pipe(gulp.dest('./temp/sprite/'));
 });
 
 gulp.task('copySpritesCss', function() {
@@ -60,6 +69,13 @@ gulp.task('copySpritesCss', function() {
     .pipe(rename('_sprite.css'))
     .pipe(gulp.dest('./assets/styles/modules'));
 });
+
+gulp.task('copySpriteGraphic', () => gulp.src('./temp/sprite/css/**/*.svg')
+  .pipe(gulp.dest('./assets/images/sprites')));
+
+gulp.task('endClean', () => del('./temp/sprite'));
+
+gulp.task('icons', gulp.series('beginClean', 'sprites', 'copySpriteGraphic', 'copySpritesCss', 'endClean'));
 
 //javascript part
 gulp.task('scripts', function(callback) {
@@ -69,5 +85,36 @@ gulp.task('scripts', function(callback) {
     }
     console.log(stats.toString());
     callback();
+  });
+});
+
+gulp.task('deleteDistFolder', () => del("./docs"));
+
+//optimize to build
+gulp.task('optimizeImages', function() {
+  return gulp.src(['./assets/images/**/*', '!./assets/images/icons', '!./assets/images/icons/**/*'])
+    .pipe(imagemin({
+      progressive: true,
+      interlaced: true,
+      multipass: true
+    }))
+    .pipe(gulp.dest("./docs/assets/images"));
+});
+
+gulp.task('usemin', () => gulp.src('./index.html')
+  .pipe(usemin({
+    css: [() => {return rev()}, () => {return cssnano()}],
+    js: [() => {return rev()}],
+  }))
+  .pipe(gulp.dest('./docs')));
+
+gulp.task('build', gulp.series('icons', 'deleteDistFolder','optimizeImages', 'usemin'));
+
+gulp.task('previewDist', function() {
+  browserSync.init({
+    notify: false,
+    server: {
+      baseDir: "docs"
+    }
   });
 });
