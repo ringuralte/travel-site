@@ -22,9 +22,9 @@ var reload = browserSync.reload;
 
 // for postcss and browserstream
 gulp.task('styles', function() {
-  return gulp.src('./assets/styles/*.css')
+  return gulp.src('./app/assets/styles/*.css')
     .pipe(postcss([cssImport, mixins, cssvars, nested, hexrgba, autoprefixer]))
-    .pipe(gulp.dest('./temp/styles'))
+    .pipe(gulp.dest('./app/temp/styles'))
     .pipe(reload({stream:true}));
 });
 
@@ -32,14 +32,14 @@ gulp.task('styles', function() {
 gulp.task('watch', function(){
   browserSync.init({
     server: {
-      baseDir: './'
+      baseDir: 'app'
     }
   });
 
-  gulp.watch('./assets/styles/**/*.css', gulp.series('styles'));
-  gulp.watch('*.html').on('change', reload);
-  gulp.watch('./assets/scripts/**/*.js', gulp.series('scripts'));
-  gulp.watch('./assets/scripts/**/*.js').on('change', reload);
+  gulp.watch('./app/assets/styles/**/*.css', gulp.series('styles'));
+  gulp.watch('./app/*.html').on('change', reload);
+  gulp.watch('./app/assets/scripts/**/*.js', gulp.series('scripts'));
+  gulp.watch('./app/assets/scripts/**/*.js').on('change', reload);
 });
 
 //sprite management
@@ -59,21 +59,21 @@ var config = {
 gulp.task('beginClean', () => del(['./temp/sprite', './assets/images/sprites']));
 
 gulp.task('sprites', function() {
-  return gulp.src('./assets/images/icons/**/*.svg')
+  return gulp.src('./app/assets/images/icons/**/*.svg')
     .pipe(sVgSprite(config))
-    .pipe(gulp.dest('./temp/sprite/'));
+    .pipe(gulp.dest('./app/temp/sprite/'));
 });
 
 gulp.task('copySpritesCss', function() {
-  return gulp.src('./temp/sprite/**/*.css')
+  return gulp.src('./app/temp/sprite/**/*.css')
     .pipe(rename('_sprite.css'))
-    .pipe(gulp.dest('./assets/styles/modules'));
+    .pipe(gulp.dest('./app/assets/styles/modules'));
 });
 
-gulp.task('copySpriteGraphic', () => gulp.src('./temp/sprite/css/**/*.svg')
-  .pipe(gulp.dest('./assets/images/sprites')));
+gulp.task('copySpriteGraphic', () => gulp.src('./app/temp/sprite/css/**/*.svg')
+  .pipe(gulp.dest('./app/assets/images/sprites')));
 
-gulp.task('endClean', () => del('./temp/sprite'));
+gulp.task('endClean', () => del('./app/temp/sprite'));
 
 gulp.task('icons', gulp.series('beginClean', 'sprites', 'copySpriteGraphic', 'copySpritesCss', 'endClean'));
 
@@ -92,7 +92,7 @@ gulp.task('deleteDistFolder', () => del("./docs"));
 
 //optimize to build
 gulp.task('optimizeImages', function() {
-  return gulp.src(['./assets/images/**/*', '!./assets/images/icons', '!./assets/images/icons/**/*'])
+  return gulp.src(['./app/assets/images/**/*', '!./app/assets/images/icons', '!./app/assets/images/icons/**/*'])
     .pipe(imagemin({
       progressive: true,
       interlaced: true,
@@ -101,7 +101,7 @@ gulp.task('optimizeImages', function() {
     .pipe(gulp.dest("./docs/assets/images"));
 });
 
-gulp.task('usemin', () => gulp.src('./index.html')
+gulp.task('usemin', () => gulp.src('./app/index.html')
   .pipe(usemin({
     css: [() => {return rev()}, () => {return cssnano()}],
     js: [() => {return rev()}],
